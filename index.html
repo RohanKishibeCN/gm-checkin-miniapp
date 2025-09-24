@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -7,12 +6,12 @@
     <title>GM Check-in - Farcaster MiniApp</title>
     
     <!-- Farcaster MiniApp Meta Tags -->
-    <meta property="fc:miniapp" content='{"name":"GM Check-in","description":"Daily check-in with USDC rewards","icon":"https://via.placeholder.com/256x256/4F46E5/FFFFFF?text=GM","url":"https://your-domain.com","version":"1.0.0","features":{"auth":true,"rewards":true,"social":true}}' />
+    <meta property="fc:miniapp" content='{"name":"GM Check-in","description":"Daily check-in with USDC rewards","icon":"https://via.placeholder.com/256x256/4F46E5/FFFFFF?text=GM","url":"https://rohankishibecn.github.io/gm-checkin-miniapp","version":"1.0.0","features":{"auth":true,"rewards":true,"social":true}}' />
     <meta property="fc:frame" content="vNext" />
     <meta property="fc:frame:image" content="https://via.placeholder.com/1200x630/4F46E5/FFFFFF?text=GM+Check-in" />
     <meta property="fc:frame:button:1" content="Start Check-in" />
     <meta property="fc:frame:button:1:action" content="link" />
-    <meta property="fc:frame:button:1:target" content="https://your-domain.com" />
+    <meta property="fc:frame:button:1:target" content="https://rohankishibecn.github.io/gm-checkin-miniapp" />
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#4F46E5">
@@ -21,13 +20,6 @@
     <meta name="apple-mobile-web-app-title" content="GM Check-in">
     <link rel="manifest" href="manifest-farcaster.json">
     
-=======
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GM Check-in MiniApp</title>
->>>>>>> b3933a4145ac66a094b2782445a115bbd66258f8
     <style>
         * {
             margin: 0;
@@ -37,7 +29,6 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-<<<<<<< HEAD
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: white;
@@ -275,6 +266,15 @@
             font-size: 14px;
         }
 
+        .debug-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -284,243 +284,22 @@
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
-=======
-            background: #8A63D2;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(138, 99, 210, 0.2);
-            padding: 32px;
-            max-width: 380px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .header {
-            margin-bottom: 24px;
-        }
-
-        .header h1 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .streak-display {
-            background: linear-gradient(135deg, #8A63D2, #9D7ADB);
-            color: white;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-        }
-
-        .streak-display h3 {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .streak-display .value {
-            font-size: 28px;
-            font-weight: 700;
-        }
-
-        .stats-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            flex: 1;
-            background: #F8F9FA;
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-card h4 {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .stat-card .value {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .checkin-button {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 16px;
-            position: relative;
-        }
-
-        .checkin-button.active {
-            background: linear-gradient(135deg, #8A63D2, #9D7ADB);
-            box-shadow: 0 4px 16px rgba(138, 99, 210, 0.3);
-        }
-
-        .checkin-button.active:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(138, 99, 210, 0.4);
-        }
-
-        .checkin-button.disabled {
-            background: #E9ECEF;
-            color: #ADB5BD;
-            cursor: not-allowed;
-        }
-
-        .checkin-button.animate {
-            animation: pulse 0.4s ease-in-out;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .status {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-
-        .milestones {
-            background: #F8F9FA;
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .milestones h3 {
-            color: #333;
-            font-size: 14px;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .milestone {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            font-size: 13px;
-            border-bottom: 1px solid #E9ECEF;
-        }
-
-        .milestone:last-child {
-            border-bottom: none;
-        }
-
-        .milestone.completed {
-            color: #8A63D2;
-            font-weight: 500;
-        }
-
-        .milestone.pending {
-            color: #ADB5BD;
-        }
-
-        .milestone .reward {
-            font-weight: 500;
-        }
-
-        .reward-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            text-align: center;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            max-width: 300px;
-        }
-
-        .reward-popup.show {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .reward-popup h2 {
-            color: #8A63D2;
-            margin-bottom: 8px;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .reward-popup p {
-            color: #666;
-            margin-bottom: 16px;
-            font-size: 14px;
-        }
-
-        .reward-popup button {
-            background: #8A63D2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .overlay.show {
-            opacity: 1;
-            visibility: visible;
->>>>>>> b3933a4145ac66a094b2782445a115bbd66258f8
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-<<<<<<< HEAD
             <div class="logo">GM</div>
             <h1 class="title">GM Check-in</h1>
             <p class="subtitle">每日签到，赚取 USDC 奖励</p>
+        </div>
+
+        <!-- 调试信息 -->
+        <div class="debug-info" id="debugInfo">
+            <div>环境: <span id="envInfo">检测中...</span></div>
+            <div>SDK 状态: <span id="sdkStatus">未加载</span></div>
+            <div>Ready 调用: <span id="readyStatus">未调用</span></div>
         </div>
 
         <!-- 认证部分 -->
@@ -607,16 +386,77 @@
             checkins: [],
             totalRewards: 0,
             currentStreak: 0,
-            lastCheckin: null
+            lastCheckin: null,
+            sdkReady: false
         };
+
+        // 调试信息更新
+        function updateDebugInfo() {
+            const isInFrame = window.parent !== window;
+            const hasSdk = typeof window.sdk !== 'undefined';
+            
+            document.getElementById('envInfo').textContent = isInFrame ? 'Farcaster MiniApp' : '独立浏览器';
+            document.getElementById('sdkStatus').textContent = hasSdk ? '已加载' : '未加载';
+            document.getElementById('readyStatus').textContent = appState.sdkReady ? '已调用' : '未调用';
+        }
+
+        // 调用 Farcaster SDK ready()
+        function callFarcasterReady() {
+            try {
+                if (typeof window.sdk !== 'undefined' && window.sdk.actions && window.sdk.actions.ready) {
+                    window.sdk.actions.ready();
+                    appState.sdkReady = true;
+                    console.log('✅ 成功调用 sdk.actions.ready()');
+                    showNotification('Farcaster SDK 已就绪');
+                    updateDebugInfo();
+                    return true;
+                } else {
+                    console.warn('⚠️ Farcaster SDK 未完全加载');
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ 调用 sdk.actions.ready() 失败:', error);
+                return false;
+            }
+        }
+
+        // 等待并调用 SDK ready
+        function waitForSDKAndReady() {
+            let attempts = 0;
+            const maxAttempts = 100; // 10秒超时
+            
+            const checkSDK = setInterval(() => {
+                attempts++;
+                updateDebugInfo();
+                
+                if (callFarcasterReady()) {
+                    clearInterval(checkSDK);
+                    console.log('🎉 SDK 就绪完成');
+                } else if (attempts >= maxAttempts) {
+                    console.warn('⏰ SDK 加载超时');
+                    clearInterval(checkSDK);
+                    // 即使超时也要尝试调用一次
+                    setTimeout(() => callFarcasterReady(), 1000);
+                }
+            }, 100);
+        }
 
         // 初始化应用
         async function initApp() {
-            console.log('初始化 GM Check-in 应用...');
+            console.log('🚀 初始化 GM Check-in 应用...');
+            updateDebugInfo();
             
             // 检查是否在 Farcaster 环境中
             if (window.parent !== window) {
-                console.log('在 Farcaster MiniApp 环境中运行');
+                console.log('📱 在 Farcaster MiniApp 环境中运行');
+                
+                // 立即尝试调用 ready()
+                if (!callFarcasterReady()) {
+                    console.log('⏳ SDK 未就绪，开始等待...');
+                    waitForSDKAndReady();
+                }
+            } else {
+                console.log('🌐 在独立浏览器环境中运行');
             }
             
             // 尝试自动连接
@@ -650,29 +490,47 @@
             authLoading.style.display = 'inline-block';
             
             try {
-                // 模拟 Farcaster 认证流程
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // 模拟用户数据
-                const mockUser = {
-                    fid: Math.floor(Math.random() * 100000),
-                    username: 'user' + Math.floor(Math.random() * 1000),
-                    displayName: 'GM User',
-                    pfpUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random()}`,
-                    custodyAddress: '0x' + Math.random().toString(16).substr(2, 40)
-                };
-                
-                appState.user = mockUser;
-                appState.isAuthenticated = true;
-                
-                // 保存认证信息
-                localStorage.setItem('farcaster_auth', JSON.stringify({
-                    user: mockUser,
-                    timestamp: Date.now()
-                }));
-                
-                await loadUserData();
-                showNotification('连接成功！欢迎使用 GM Check-in');
+                // 检查是否在 Farcaster 环境中
+                if (window.parent !== window && typeof window.sdk !== 'undefined') {
+                    console.log('🔐 使用 Farcaster SDK 进行认证');
+                    
+                    try {
+                        // 确保 SDK 已就绪
+                        if (!appState.sdkReady) {
+                            callFarcasterReady();
+                        }
+                        
+                        // 尝试获取用户信息
+                        const user = await window.sdk.actions.getUserFid();
+                        console.log('👤 获取到用户信息:', user);
+                        
+                        const userInfo = {
+                            fid: user.fid || Math.floor(Math.random() * 100000),
+                            username: user.username || 'farcaster_user',
+                            displayName: user.displayName || 'Farcaster User',
+                            pfpUrl: user.pfpUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fid}`,
+                            custodyAddress: user.custodyAddress || '0x' + Math.random().toString(16).substr(2, 40)
+                        };
+                        
+                        appState.user = userInfo;
+                        appState.isAuthenticated = true;
+                        
+                        localStorage.setItem('farcaster_auth', JSON.stringify({
+                            user: userInfo,
+                            timestamp: Date.now()
+                        }));
+                        
+                        await loadUserData();
+                        showNotification('🎉 Farcaster 认证成功！');
+                        
+                    } catch (sdkError) {
+                        console.error('❌ Farcaster SDK 认证失败:', sdkError);
+                        await simulateAuth();
+                    }
+                } else {
+                    console.log('🔄 非 Farcaster 环境，使用模拟认证');
+                    await simulateAuth();
+                }
                 
             } catch (error) {
                 console.error('连接失败:', error);
@@ -682,6 +540,30 @@
                 authLoading.style.display = 'none';
                 updateUI();
             }
+        }
+        
+        // 模拟认证（用于非 Farcaster 环境）
+        async function simulateAuth() {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            const mockUser = {
+                fid: Math.floor(Math.random() * 100000),
+                username: 'user' + Math.floor(Math.random() * 1000),
+                displayName: 'GM User',
+                pfpUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random()}`,
+                custodyAddress: '0x' + Math.random().toString(16).substr(2, 40)
+            };
+            
+            appState.user = mockUser;
+            appState.isAuthenticated = true;
+            
+            localStorage.setItem('farcaster_auth', JSON.stringify({
+                user: mockUser,
+                timestamp: Date.now()
+            }));
+            
+            await loadUserData();
+            showNotification('连接成功！欢迎使用 GM Check-in');
         }
 
         // 加载用户数据
@@ -800,6 +682,8 @@
 
         // 更新UI
         function updateUI() {
+            updateDebugInfo();
+            
             // 认证状态
             const authSection = document.getElementById('authSection');
             const userInfo = document.getElementById('userInfo');
@@ -869,312 +753,56 @@
         }
 
         // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 DOM 加载完成，开始初始化应用');
+            initApp();
+        });
+        
+        // 监听页面完全加载
+        window.addEventListener('load', () => {
+            console.log('🌐 页面完全加载，再次检查 SDK');
+            if (window.parent !== window) {
+                // 延迟调用确保 SDK 完全加载
+                setTimeout(() => {
+                    callFarcasterReady();
+                }, 500);
+            }
+        });
         
         // Farcaster MiniApp 消息处理
         window.addEventListener('message', (event) => {
+            console.log('📨 收到消息:', event.data);
+            
             if (event.data.type === 'farcaster_auth') {
-                // 处理 Farcaster 认证消息
-                console.log('收到 Farcaster 认证消息:', event.data);
+                console.log('🔐 收到 Farcaster 认证消息:', event.data);
+            }
+            
+            // 处理 SDK 相关消息
+            if (event.data.type === 'sdk_ready' || event.data.type === 'farcaster_ready') {
+                console.log('✅ 收到 SDK 就绪消息');
+                setTimeout(() => callFarcasterReady(), 100);
             }
         });
-=======
-            <h1 id="greeting">Good Morning!</h1>
-            <p>Ready to say GM?</p>
-        </div>
-
-        <div class="streak-display">
-            <h3>Current Streak</h3>
-            <div class="value" id="streak">0 days</div>
-        </div>
-
-        <div class="stats-row">
-            <div class="stat-card">
-                <h4>Total Check-ins</h4>
-                <div class="value" id="total">0</div>
-            </div>
-            <div class="stat-card">
-                <h4>Tokens Earned</h4>
-                <div class="value" id="tokens">0</div>
-            </div>
-        </div>
-
-        <button class="checkin-button active" id="checkinBtn">
-            <span id="btnText">GM!</span>
-        </button>
-
-        <div class="status" id="status">
-            Ready for today's check-in!
-        </div>
-
-        <div class="milestones">
-            <h3>Milestone Rewards</h3>
-            <div class="milestone pending" id="milestone7">
-                <span>7 Day Streak</span>
-                <span class="reward">+50 tokens</span>
-            </div>
-            <div class="milestone pending" id="milestone15">
-                <span>15 Day Streak</span>
-                <span class="reward">+100 tokens</span>
-            </div>
-            <div class="milestone pending" id="milestone30">
-                <span>30 Day Streak</span>
-                <span class="reward">+200 tokens</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reward Popup -->
-    <div class="overlay" id="overlay" onclick="closeRewardPopup()"></div>
-    <div class="reward-popup" id="rewardPopup">
-        <h2 id="rewardTitle">Congratulations!</h2>
-        <p id="rewardText">You earned a reward!</p>
-        <button onclick="closeRewardPopup()">Awesome!</button>
-    </div>
-
-    <script>
-        // Global variables
-        let appData = {
-            lastCheckIn: null,
-            currentStreak: 0,
-            totalCheckIns: 0,
-            tokens: 0
-        };
-
-        // Load data from localStorage
-        function loadData() {
-            try {
-                const saved = localStorage.getItem('gmCheckinData');
-                if (saved) {
-                    appData = JSON.parse(saved);
-                }
-            } catch (e) {
-                console.log('Error loading data:', e);
+        
+        // 全局错误处理
+        window.addEventListener('error', (event) => {
+            console.error('🚨 全局错误:', event.error);
+        });
+        
+        // 多重保险：确保在各种情况下都调用 ready()
+        setTimeout(() => {
+            if (window.parent !== window) {
+                console.log('⏰ 延迟保险调用 ready()');
+                callFarcasterReady();
             }
-        }
-
-        // Save data to localStorage
-        function saveData() {
-            try {
-                localStorage.setItem('gmCheckinData', JSON.stringify(appData));
-            } catch (e) {
-                console.log('Error saving data:', e);
+        }, 1000);
+        
+        setTimeout(() => {
+            if (window.parent !== window && !appState.sdkReady) {
+                console.log('⏰ 最终保险调用 ready()');
+                callFarcasterReady();
             }
-        }
-
-        // Update greeting based on time
-        function updateGreeting() {
-            const hour = new Date().getHours();
-            const greetingEl = document.getElementById('greeting');
-            
-            if (greetingEl) {
-                if (hour < 12) {
-                    greetingEl.textContent = 'Good Morning!';
-                } else if (hour < 18) {
-                    greetingEl.textContent = 'Good Afternoon!';
-                } else {
-                    greetingEl.textContent = 'Good Evening!';
-                }
-            }
-        }
-
-        // Check if user can check in today
-        function checkCanCheckIn() {
-            const now = new Date();
-            const today = now.toDateString();
-            
-            if (appData.lastCheckIn) {
-                const lastCheckIn = new Date(appData.lastCheckIn);
-                const isToday = lastCheckIn.toDateString() === today;
-                
-                if (isToday) {
-                    setButtonDisabled();
-                    return false;
-                }
-            }
-            
-            setButtonActive();
-            return true;
-        }
-
-        // Set button to active state
-        function setButtonActive() {
-            const btn = document.getElementById('checkinBtn');
-            const status = document.getElementById('status');
-            const btnText = document.getElementById('btnText');
-            
-            if (btn) {
-                btn.className = 'checkin-button active';
-                btn.disabled = false;
-            }
-            if (btnText) btnText.textContent = 'GM!';
-            if (status) status.textContent = 'Ready for today\'s check-in!';
-        }
-
-        // Set button to disabled state
-        function setButtonDisabled() {
-            const btn = document.getElementById('checkinBtn');
-            const status = document.getElementById('status');
-            const btnText = document.getElementById('btnText');
-            
-            if (btn) {
-                btn.className = 'checkin-button disabled';
-                btn.disabled = true;
-            }
-            if (btnText) btnText.textContent = 'Done';
-            if (status) status.textContent = 'Already checked in today. Come back tomorrow!';
-        }
-
-        // Main check-in function
-        function checkIn() {
-            if (!checkCanCheckIn()) return;
-
-            const now = new Date();
-            let newStreak = 1;
-            let tokensEarned = 10; // Base reward
-
-            if (appData.lastCheckIn) {
-                const lastCheckIn = new Date(appData.lastCheckIn);
-                const yesterday = new Date(now);
-                yesterday.setDate(yesterday.getDate() - 1);
-                
-                // If checked in yesterday, increment streak
-                if (lastCheckIn.toDateString() === yesterday.toDateString()) {
-                    newStreak = appData.currentStreak + 1;
-                }
-            }
-
-            // Calculate milestone rewards
-            let milestoneReward = 0;
-            let milestoneText = '';
-            
-            if (newStreak === 7) {
-                milestoneReward = 50;
-                milestoneText = '7-day streak achieved!';
-            } else if (newStreak === 15) {
-                milestoneReward = 100;
-                milestoneText = '15-day streak achieved!';
-            } else if (newStreak === 30) {
-                milestoneReward = 200;
-                milestoneText = '30-day streak achieved!';
-            }
-
-            tokensEarned += milestoneReward;
-
-            // Update data
-            appData.lastCheckIn = now.toISOString();
-            appData.currentStreak = newStreak;
-            appData.totalCheckIns += 1;
-            appData.tokens += tokensEarned;
-
-            // Save data
-            saveData();
-
-            // Play animation
-            playCheckInAnimation();
-
-            // Update UI
-            updateUI();
-            setButtonDisabled();
-
-            // Show reward popup
-            if (milestoneReward > 0) {
-                showRewardPopup(milestoneText, `Earned ${tokensEarned} tokens!`);
-            } else {
-                showRewardPopup('Check-in successful!', `Earned ${tokensEarned} tokens!`);
-            }
-        }
-
-        // Play check-in animation
-        function playCheckInAnimation() {
-            const btn = document.getElementById('checkinBtn');
-            if (btn) {
-                btn.classList.add('animate');
-                setTimeout(() => {
-                    btn.classList.remove('animate');
-                }, 400);
-            }
-        }
-
-        // Update UI elements
-        function updateUI() {
-            const streakEl = document.getElementById('streak');
-            const totalEl = document.getElementById('total');
-            const tokensEl = document.getElementById('tokens');
-            
-            if (streakEl) {
-                streakEl.textContent = `${appData.currentStreak} ${appData.currentStreak === 1 ? 'day' : 'days'}`;
-            }
-            if (totalEl) totalEl.textContent = appData.totalCheckIns;
-            if (tokensEl) tokensEl.textContent = appData.tokens;
-
-            // Update milestone status
-            updateMilestone('milestone7', 7);
-            updateMilestone('milestone15', 15);
-            updateMilestone('milestone30', 30);
-        }
-
-        // Update milestone status
-        function updateMilestone(id, days) {
-            const milestone = document.getElementById(id);
-            if (milestone) {
-                if (appData.currentStreak >= days) {
-                    milestone.className = 'milestone completed';
-                } else {
-                    milestone.className = 'milestone pending';
-                }
-            }
-        }
-
-        // Show reward popup
-        function showRewardPopup(title, text) {
-            const titleEl = document.getElementById('rewardTitle');
-            const textEl = document.getElementById('rewardText');
-            const overlay = document.getElementById('overlay');
-            const popup = document.getElementById('rewardPopup');
-            
-            if (titleEl) titleEl.textContent = title;
-            if (textEl) textEl.textContent = text;
-            if (overlay) overlay.classList.add('show');
-            if (popup) popup.classList.add('show');
-        }
-
-        // Close reward popup
-        function closeRewardPopup() {
-            const overlay = document.getElementById('overlay');
-            const popup = document.getElementById('rewardPopup');
-            
-            if (overlay) overlay.classList.remove('show');
-            if (popup) popup.classList.remove('show');
-        }
-
-        // Initialize app
-        function initApp() {
-            loadData();
-            updateUI();
-            updateGreeting();
-            checkCanCheckIn();
-            
-            // Add event listener to check-in button
-            const checkinBtn = document.getElementById('checkinBtn');
-            if (checkinBtn) {
-                checkinBtn.addEventListener('click', checkIn);
-            }
-
-            // Update greeting and check status every minute
-            setInterval(() => {
-                checkCanCheckIn();
-                updateGreeting();
-            }, 60000);
-        }
-
-        // Start app when page loads
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
->>>>>>> b3933a4145ac66a094b2782445a115bbd66258f8
+        }, 3000);
     </script>
 </body>
 </html>
