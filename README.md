@@ -1,6 +1,6 @@
-# GM Check-in App
+# GM Check-in MiniApp
 
-A daily check-in application built for the Farcaster ecosystem with Base chain integration.
+A daily check-in MiniApp built for the Farcaster ecosystem with Base chain integration.
 
 ## Features
 

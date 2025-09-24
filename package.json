@@ -1,7 +1,7 @@
 {
-  "name": "gm-checkin-app",
+  "name": "gm-checkin-miniapp",
   "version": "1.0.0",
-  "description": "GM Daily Check-in App on Base Chain",
+  "description": "GM Daily Check-in MiniApp for Farcaster on Base Chain",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
