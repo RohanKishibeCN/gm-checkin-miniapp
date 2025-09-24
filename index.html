@@ -274,35 +274,6 @@
             font-family: monospace;
         }
 
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            color: white;
-        }
-
-        .loading-screen.hidden {
-            display: none;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -316,16 +287,6 @@
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <h2>GM Check-in</h2>
-        <p>正在初始化...</p>
-        <div id="loadingStatus" style="margin-top: 10px; font-size: 14px; opacity: 0.8;">
-            检测环境中...
-        </div>
-    </div>
-
     <div class="container">
         <div class="header">
             <div class="logo">GM</div>
@@ -430,23 +391,6 @@
             isInitialized: false
         };
 
-        // 更新加载状态
-        function updateLoadingStatus(message) {
-            const loadingStatus = document.getElementById('loadingStatus');
-            if (loadingStatus) {
-                loadingStatus.textContent = message;
-            }
-            console.log('🔄 加载状态:', message);
-        }
-
-        // 隐藏加载屏幕
-        function hideLoadingScreen() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            if (loadingScreen) {
-                loadingScreen.classList.add('hidden');
-            }
-        }
-
         // 调试信息更新
         function updateDebugInfo() {
             const isInFrame = window.parent !== window;
@@ -458,92 +402,71 @@
             document.getElementById('initStatus').textContent = appState.isInitialized ? '完成' : '进行中';
         }
 
-        // 调用 Farcaster SDK ready() - 根据官方文档
-        function callFarcasterReady() {
-            try {
-                // 检查是否在 Farcaster 环境中
-                if (window.parent === window) {
-                    console.log('🌐 非 Farcaster 环境，跳过 ready() 调用');
-                    appState.sdkReady = true;
-                    return true;
-                }
-
-                // 检查 SDK 是否可用
-                if (typeof window.sdk === 'undefined') {
-                    console.log('⚠️ SDK 未定义，等待加载...');
-                    return false;
-                }
-
-                if (!window.sdk.actions) {
-                    console.log('⚠️ SDK actions 未定义，等待加载...');
-                    return false;
-                }
-
-                if (typeof window.sdk.actions.ready !== 'function') {
-                    console.log('⚠️ SDK ready 方法未定义，等待加载...');
-                    return false;
-                }
-
-                // 调用 ready()
-                window.sdk.actions.ready();
+        // 根据 Farcaster 官方文档正确调用 ready()
+        function initializeFarcasterSDK() {
+            // 只在 iframe 环境中调用 ready()
+            if (window.parent === window) {
+                console.log('🌐 非 Farcaster 环境，跳过 SDK 初始化');
                 appState.sdkReady = true;
-                console.log('✅ 成功调用 sdk.actions.ready()');
-                updateLoadingStatus('SDK 已就绪');
-                updateDebugInfo();
-                return true;
-
-            } catch (error) {
-                console.error('❌ 调用 sdk.actions.ready() 失败:', error);
-                return false;
+                return Promise.resolve(true);
             }
-        }
 
-        // 初始化应用 - 根据官方文档的最佳实践
-        async function initApp() {
-            console.log('🚀 开始初始化 GM Check-in 应用...');
-            updateLoadingStatus('初始化应用...');
-            updateDebugInfo();
-            
-            // 检查环境
-            const isInFrame = window.parent !== window;
-            
-            if (isInFrame) {
-                console.log('📱 在 Farcaster MiniApp 环境中运行');
-                updateLoadingStatus('检测到 Farcaster 环境');
+            return new Promise((resolve) => {
+                console.log('📱 Farcaster 环境检测到，初始化 SDK...');
                 
-                // 等待 SDK 加载并调用 ready()
+                // 检查 SDK 是否已经可用
+                function checkSDK() {
+                    if (typeof window.sdk !== 'undefined' && 
+                        window.sdk.actions && 
+                        typeof window.sdk.actions.ready === 'function') {
+                        
+                        try {
+                            // 调用 ready() 方法
+                            window.sdk.actions.ready();
+                            appState.sdkReady = true;
+                            console.log('✅ 成功调用 sdk.actions.ready()');
+                            resolve(true);
+                            return true;
+                        } catch (error) {
+                            console.error('❌ 调用 sdk.actions.ready() 失败:', error);
+                            resolve(false);
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+
+                // 立即检查一次
+                if (checkSDK()) {
+                    return;
+                }
+
+                // 如果 SDK 还没准备好，等待一段时间
                 let attempts = 0;
-                const maxAttempts = 50; // 5秒超时
+                const maxAttempts = 30; // 3秒超时
                 
-                const waitForSDK = setInterval(() => {
+                const interval = setInterval(() => {
                     attempts++;
-                    updateLoadingStatus(`等待 SDK 加载... (${attempts}/${maxAttempts})`);
                     
-                    if (callFarcasterReady()) {
-                        clearInterval(waitForSDK);
-                        console.log('🎉 SDK 初始化完成');
-                        completeInitialization();
+                    if (checkSDK()) {
+                        clearInterval(interval);
                     } else if (attempts >= maxAttempts) {
-                        console.warn('⏰ SDK 加载超时');
-                        clearInterval(waitForSDK);
-                        updateLoadingStatus('SDK 加载超时，使用备用模式');
-                        // 即使超时也继续初始化
-                        completeInitialization();
+                        console.warn('⏰ SDK 初始化超时');
+                        clearInterval(interval);
+                        resolve(false);
                     }
                 }, 100);
-                
-            } else {
-                console.log('🌐 在独立浏览器环境中运行');
-                updateLoadingStatus('独立浏览器模式');
-                appState.sdkReady = true;
-                completeInitialization();
-            }
+            });
         }
 
-        // 完成初始化
-        async function completeInitialization() {
+        // 初始化应用
+        async function initApp() {
+            console.log('🚀 开始初始化 GM Check-in 应用...');
+            updateDebugInfo();
+            
             try {
-                updateLoadingStatus('加载用户数据...');
+                // 初始化 Farcaster SDK
+                await initializeFarcasterSDK();
                 
                 // 检查现有认证
                 await checkExistingAuth();
@@ -555,20 +478,12 @@
                 appState.isInitialized = true;
                 updateDebugInfo();
                 
-                updateLoadingStatus('初始化完成');
-                
-                // 延迟隐藏加载屏幕，确保用户看到完成状态
-                setTimeout(() => {
-                    hideLoadingScreen();
-                    showNotification('🎉 欢迎使用 GM Check-in！');
-                }, 500);
-                
                 console.log('✅ 应用初始化完成');
+                showNotification('🎉 欢迎使用 GM Check-in！');
                 
             } catch (error) {
                 console.error('❌ 初始化失败:', error);
-                updateLoadingStatus('初始化失败');
-                setTimeout(hideLoadingScreen, 1000);
+                showNotification('初始化失败，请刷新页面重试');
             }
         }
 
@@ -605,7 +520,7 @@
                     try {
                         // 确保 SDK 已就绪
                         if (!appState.sdkReady) {
-                            callFarcasterReady();
+                            await initializeFarcasterSDK();
                         }
                         
                         // 尝试获取用户信息
@@ -860,39 +775,22 @@
             }, 3000);
         }
 
-        // 页面加载完成后立即开始初始化
+        // 页面加载完成后立即初始化
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initApp);
         } else {
+            // 如果 DOM 已经加载完成，立即初始化
             initApp();
         }
-        
-        // 监听页面完全加载
-        window.addEventListener('load', () => {
-            console.log('🌐 页面完全加载');
-            // 如果还没有调用 ready()，再次尝试
-            if (window.parent !== window && !appState.sdkReady) {
-                setTimeout(() => {
-                    console.log('🔄 页面加载完成后重试 ready()');
-                    callFarcasterReady();
-                }, 100);
-            }
-        });
-        
-        // 监听来自 Farcaster 的消息
-        window.addEventListener('message', (event) => {
-            console.log('📨 收到消息:', event.data);
-            
-            // 处理 SDK 就绪消息
-            if (event.data.type === 'sdk_ready' || event.data.type === 'farcaster_ready') {
-                console.log('✅ 收到 SDK 就绪消息');
-                setTimeout(() => callFarcasterReady(), 50);
-            }
-        });
         
         // 全局错误处理
         window.addEventListener('error', (event) => {
             console.error('🚨 全局错误:', event.error);
+        });
+
+        // 监听来自 Farcaster 的消息
+        window.addEventListener('message', (event) => {
+            console.log('📨 收到消息:', event.data);
         });
     </script>
 </body>
