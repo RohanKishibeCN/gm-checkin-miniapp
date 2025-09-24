@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM Check-in - Farcaster MiniApp</title>
+    
+    <!-- Farcaster MiniApp Meta Tags -->
+    <meta property="fc:miniapp" content='{"name":"GM Check-in","description":"Daily check-in with USDC rewards","icon":"https://via.placeholder.com/256x256/4F46E5/FFFFFF?text=GM","url":"https://rohankishibecn.github.io/gm-checkin-miniapp","version":"1.0.0","features":{"auth":true,"rewards":true,"social":true}}' />
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="https://via.placeholder.com/1200x630/4F46E5/FFFFFF?text=GM+Check-in" />
+    <meta property="fc:frame:button:1" content="Start Check-in" />
+    <meta property="fc:frame:button:1:action" content="link" />
+    <meta property="fc:frame:button:1:target" content="https://rohankishibecn.github.io/gm-checkin-miniapp" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GM Check-in">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .check-in-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .check-in-btn {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 15px;
+        }
+
+        .check-in-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .check-in-btn:disabled {
+            background: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reward-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        .milestones {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .milestone-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .milestone-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+
+        .milestone-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .milestone-badge.completed {
+            background: #4ECDC4;
+        }
+
+        .auth-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-btn {
+            background: #8B5CF6;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .auth-btn:hover {
+            background: #7C3AED;
+            transform: translateY(-1px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px 0;
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        .debug-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">GM</div>
+            <h1 class="title">GM Check-in</h1>
+            <p class="subtitle">每日签到，赚取 USDC 奖励</p>
+        </div>
+
+        <!-- 调试信息 -->
+        <div class="debug-info" id="debugInfo">
+            <div>环境: <span id="envInfo">检测中...</span></div>
+            <div>SDK 状态: <span id="sdkStatus">未加载</span></div>
+            <div>Ready 调用: <span id="readyStatus">未调用</span></div>
+            <div>初始化: <span id="initStatus">进行中...</span></div>
+        </div>
+
+        <!-- 认证部分 -->
+        <div class="auth-section" id="authSection">
+            <h3>连接 Farcaster</h3>
+            <p style="margin: 15px 0; opacity: 0.8;">使用 Farcaster 账户登录开始签到</p>
+            <button class="auth-btn" onclick="connectFarcaster()">
+                <span id="authText">连接钱包</span>
+                <span id="authLoading" class="loading" style="display: none;"></span>
+            </button>
+        </div>
+
+        <!-- 用户信息 -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            <img class="user-avatar" id="userAvatar" src="" alt="User Avatar">
+            <div>
+                <div id="userName" style="font-weight: bold;"></div>
+                <div id="userHandle" style="font-size: 14px; opacity: 0.8;"></div>
+            </div>
+        </div>
+
+        <!-- 统计数据 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalCheckins">0</div>
+                <div class="stat-label">总签到次数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalRewards">0.00</div>
+                <div class="stat-label">总奖励 (USDC)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentStreak">0</div>
+                <div class="stat-label">连续签到</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="nextMilestone">7</div>
+                <div class="stat-label">下个里程碑</div>
+            </div>
+        </div>
+
+        <!-- 签到部分 -->
+        <div class="check-in-section">
+            <button class="check-in-btn" id="checkinBtn" onclick="performCheckin()">
+                <span id="checkinText">今日签到</span>
+                <span id="checkinLoading" class="loading" style="display: none;"></span>
+            </button>
+            <div class="reward-info">
+                每次签到奖励 0.01 USDC<br>
+                达到里程碑额外奖励 0.01 USDC
+            </div>
+        </div>
+
+        <!-- 里程碑 -->
+        <div class="milestones">
+            <div class="milestone-title">签到里程碑</div>
+            <div class="milestone-item">
+                <span>连续签到 7 天</span>
+                <span class="milestone-badge" id="milestone7">0/7</span>
+            </div>
+            <div class="milestone-item">
+                <span>连续签到 30 天</span>
+                <span class="milestone-badge" id="milestone30">0/30</span>
+            </div>
+            <div class="milestone-item">
+                <span>连续签到 100 天</span>
+                <span class="milestone-badge" id="milestone100">0/100</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>基于 Base 网络 · 由 Farcaster 驱动</p>
+        </div>
+    </div>
+
+    <!-- 通知 -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // 应用状态
+        let appState = {
+            user: null,
+            isAuthenticated: false,
+            checkins: [],
+            totalRewards: 0,
+            currentStreak: 0,
+            lastCheckin: null,
+            sdkReady: false,
+            isInitialized: false
+        };
+
+        // 调试信息更新
+        function updateDebugInfo() {
+            const isInFrame = window.parent !== window;
+            const hasSdk = typeof window.sdk !== 'undefined';
+            
+            document.getElementById('envInfo').textContent = isInFrame ? 'Farcaster MiniApp' : '独立浏览器';
+            document.getElementById('sdkStatus').textContent = hasSdk ? '已加载' : '未加载';
+            document.getElementById('readyStatus').textContent = appState.sdkReady ? '已调用' : '未调用';
+            document.getElementById('initStatus').textContent = appState.isInitialized ? '完成' : '进行中';
+        }
+
+        // 根据 Farcaster 官方文档正确调用 ready()
+        function initializeFarcasterSDK() {
+            // 只在 iframe 环境中调用 ready()
+            if (window.parent === window) {
+                console.log('🌐 非 Farcaster 环境，跳过 SDK 初始化');
+                appState.sdkReady = true;
+                return Promise.resolve(true);
+            }
+
+            return new Promise((resolve) => {
+                console.log('📱 Farcaster 环境检测到，初始化 SDK...');
+                
+                // 检查 SDK 是否已经可用
+                function checkSDK() {
+                    if (typeof window.sdk !== 'undefined' && 
+                        window.sdk.actions && 
+                        typeof window.sdk.actions.ready === 'function') {
+                        
+                        try {
+                            // 调用 ready() 方法
+                            window.sdk.actions.ready();
+                            appState.sdkReady = true;
+                            console.log('✅ 成功调用 sdk.actions.ready()');
+                            resolve(true);
+                            return true;
+                        } catch (error) {
+                            console.error('❌ 调用 sdk.actions.ready() 失败:', error);
+                            resolve(false);
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+
+                // 立即检查一次
+                if (checkSDK()) {
+                    return;
+                }
+
+                // 如果 SDK 还没准备好，等待一段时间
+                let attempts = 0;
+                const maxAttempts = 30; // 3秒超时
+                
+                const interval = setInterval(() => {
+                    attempts++;
+                    
+                    if (checkSDK()) {
+                        clearInterval(interval);
+                    } else if (attempts >= maxAttempts) {
+                        console.warn('⏰ SDK 初始化超时');
+                        clearInterval(interval);
+                        resolve(false);
+                    }
+                }, 100);
+            });
+        }
+
+        // 初始化应用
+        async function initApp() {
+            console.log('🚀 开始初始化 GM Check-in 应用...');
+            updateDebugInfo();
+            
+            try {
+                // 初始化 Farcaster SDK
+                await initializeFarcasterSDK();
+                
+                // 检查现有认证
+                await checkExistingAuth();
+                
+                // 更新UI
+                updateUI();
+                
+                // 标记初始化完成
+                appState.isInitialized = true;
+                updateDebugInfo();
+                
+                console.log('✅ 应用初始化完成');
+                showNotification('🎉 欢迎使用 GM Check-in！');
+                
+            } catch (error) {
+                console.error('❌ 初始化失败:', error);
+                showNotification('初始化失败，请刷新页面重试');
+            }
+        }
+
+        // 检查现有认证
+        async function checkExistingAuth() {
+            try {
+                const savedAuth = localStorage.getItem('farcaster_auth');
+                if (savedAuth) {
+                    const authData = JSON.parse(savedAuth);
+                    appState.user = authData.user;
+                    appState.isAuthenticated = true;
+                    
+                    // 加载用户数据
+                    await loadUserData();
+                }
+            } catch (error) {
+                console.error('检查认证失败:', error);
+            }
+        }
+
+        // 连接 Farcaster
+        async function connectFarcaster() {
+            const authBtn = document.getElementById('authText');
+            const authLoading = document.getElementById('authLoading');
+            
+            authBtn.style.display = 'none';
+            authLoading.style.display = 'inline-block';
+            
+            try {
+                // 检查是否在 Farcaster 环境中
+                if (window.parent !== window && typeof window.sdk !== 'undefined') {
+                    console.log('🔐 使用 Farcaster SDK 进行认证');
+                    
+                    try {
+                        // 确保 SDK 已就绪
+                        if (!appState.sdkReady) {
+                            await initializeFarcasterSDK();
+                        }
+                        
+                        // 尝试获取用户信息
+                        const user = await window.sdk.actions.getUserFid();
+                        console.log('👤 获取到用户信息:', user);
+                        
+                        const userInfo = {
+                            fid: user.fid || Math.floor(Math.random() * 100000),
+                            username: user.username || 'farcaster_user',
+                            displayName: user.displayName || 'Farcaster User',
+                            pfpUrl: user.pfpUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.fid}`,
+                            custodyAddress: user.custodyAddress || '0x' + Math.random().toString(16).substr(2, 40)
+                        };
+                        
+                        appState.user = userInfo;
+                        appState.isAuthenticated = true;
+                        
+                        localStorage.setItem('farcaster_auth', JSON.stringify({
+                            user: userInfo,
+                            timestamp: Date.now()
+                        }));
+                        
+                        await loadUserData();
+                        showNotification('🎉 Farcaster 认证成功！');
+                        
+                    } catch (sdkError) {
+                        console.error('❌ Farcaster SDK 认证失败:', sdkError);
+                        await simulateAuth();
+                    }
+                } else {
+                    console.log('🔄 非 Farcaster 环境，使用模拟认证');
+                    await simulateAuth();
+                }
+                
+            } catch (error) {
+                console.error('连接失败:', error);
+                showNotification('连接失败，请重试');
+            } finally {
+                authBtn.style.display = 'inline-block';
+                authLoading.style.display = 'none';
+                updateUI();
+            }
+        }
+        
+        // 模拟认证（用于非 Farcaster 环境）
+        async function simulateAuth() {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            const mockUser = {
+                fid: Math.floor(Math.random() * 100000),
+                username: 'user' + Math.floor(Math.random() * 1000),
+                displayName: 'GM User',
+                pfpUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random()}`,
+                custodyAddress: '0x' + Math.random().toString(16).substr(2, 40)
+            };
+            
+            appState.user = mockUser;
+            appState.isAuthenticated = true;
+            
+            localStorage.setItem('farcaster_auth', JSON.stringify({
+                user: mockUser,
+                timestamp: Date.now()
+            }));
+            
+            await loadUserData();
+            showNotification('连接成功！欢迎使用 GM Check-in');
+        }
+
+        // 加载用户数据
+        async function loadUserData() {
+            try {
+                const userKey = `checkin_data_${appState.user.fid}`;
+                const savedData = localStorage.getItem(userKey);
+                
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    appState.checkins = data.checkins || [];
+                    appState.totalRewards = data.totalRewards || 0;
+                    appState.currentStreak = calculateStreak();
+                    appState.lastCheckin = data.lastCheckin;
+                }
+                
+            } catch (error) {
+                console.error('加载用户数据失败:', error);
+            }
+        }
+
+        // 执行签到
+        async function performCheckin() {
+            if (!appState.isAuthenticated) {
+                showNotification('请先连接 Farcaster 账户');
+                return;
+            }
+            
+            const today = new Date().toDateString();
+            if (appState.lastCheckin === today) {
+                showNotification('今天已经签到过了！');
+                return;
+            }
+            
+            const checkinBtn = document.getElementById('checkinText');
+            const checkinLoading = document.getElementById('checkinLoading');
+            
+            checkinBtn.style.display = 'none';
+            checkinLoading.style.display = 'inline-block';
+            
+            try {
+                // 模拟签到过程
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // 记录签到
+                const checkinData = {
+                    date: today,
+                    timestamp: Date.now(),
+                    reward: 0.01
+                };
+                
+                appState.checkins.push(checkinData);
+                appState.lastCheckin = today;
+                appState.totalRewards += 0.01;
+                
+                // 检查里程碑
+                const newStreak = calculateStreak();
+                let milestoneReward = 0;
+                
+                if (newStreak > appState.currentStreak) {
+                    if ([7, 30, 100].includes(newStreak)) {
+                        milestoneReward = 0.01;
+                        appState.totalRewards += milestoneReward;
+                        showNotification(`🎉 达成 ${newStreak} 天里程碑！额外获得 0.01 USDC`);
+                    }
+                }
+                
+                appState.currentStreak = newStreak;
+                
+                // 保存数据
+                const userKey = `checkin_data_${appState.user.fid}`;
+                localStorage.setItem(userKey, JSON.stringify({
+                    checkins: appState.checkins,
+                    totalRewards: appState.totalRewards,
+                    lastCheckin: appState.lastCheckin
+                }));
+                
+                const totalReward = 0.01 + milestoneReward;
+                showNotification(`签到成功！获得 ${totalReward.toFixed(2)} USDC`);
+                
+            } catch (error) {
+                console.error('签到失败:', error);
+                showNotification('签到失败，请重试');
+            } finally {
+                checkinBtn.style.display = 'inline-block';
+                checkinLoading.style.display = 'none';
+                updateUI();
+            }
+        }
+
+        // 计算连续签到天数
+        function calculateStreak() {
+            if (appState.checkins.length === 0) return 0;
+            
+            const sortedCheckins = appState.checkins
+                .map(c => new Date(c.date))
+                .sort((a, b) => b - a);
+            
+            let streak = 1;
+            let currentDate = sortedCheckins[0];
+            
+            for (let i = 1; i < sortedCheckins.length; i++) {
+                const prevDate = new Date(currentDate);
+                prevDate.setDate(prevDate.getDate() - 1);
+                
+                if (sortedCheckins[i].toDateString() === prevDate.toDateString()) {
+                    streak++;
+                    currentDate = sortedCheckins[i];
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        // 更新UI
+        function updateUI() {
+            updateDebugInfo();
+            
+            // 认证状态
+            const authSection = document.getElementById('authSection');
+            const userInfo = document.getElementById('userInfo');
+            
+            if (appState.isAuthenticated) {
+                authSection.style.display = 'none';
+                userInfo.style.display = 'flex';
+                
+                document.getElementById('userName').textContent = appState.user.displayName;
+                document.getElementById('userHandle').textContent = `@${appState.user.username}`;
+                document.getElementById('userAvatar').src = appState.user.pfpUrl;
+            } else {
+                authSection.style.display = 'block';
+                userInfo.style.display = 'none';
+            }
+            
+            // 统计数据
+            document.getElementById('totalCheckins').textContent = appState.checkins.length;
+            document.getElementById('totalRewards').textContent = appState.totalRewards.toFixed(2);
+            document.getElementById('currentStreak').textContent = appState.currentStreak;
+            
+            // 下个里程碑
+            const nextMilestone = [7, 30, 100].find(m => m > appState.currentStreak) || 100;
+            document.getElementById('nextMilestone').textContent = nextMilestone;
+            
+            // 里程碑状态
+            updateMilestoneStatus(7, 'milestone7');
+            updateMilestoneStatus(30, 'milestone30');
+            updateMilestoneStatus(100, 'milestone100');
+            
+            // 签到按钮状态
+            const today = new Date().toDateString();
+            const checkinBtn = document.getElementById('checkinBtn');
+            
+            if (appState.lastCheckin === today) {
+                checkinBtn.disabled = true;
+                document.getElementById('checkinText').textContent = '今日已签到';
+            } else {
+                checkinBtn.disabled = false;
+                document.getElementById('checkinText').textContent = '今日签到';
+            }
+        }
+
+        // 更新里程碑状态
+        function updateMilestoneStatus(target, elementId) {
+            const element = document.getElementById(elementId);
+            const progress = Math.min(appState.currentStreak, target);
+            
+            element.textContent = `${progress}/${target}`;
+            
+            if (progress >= target) {
+                element.classList.add('completed');
+            } else {
+                element.classList.remove('completed');
+            }
+        }
+
+        // 显示通知
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 页面加载完成后立即初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            // 如果 DOM 已经加载完成，立即初始化
+            initApp();
+        }
+        
+        // 全局错误处理
+        window.addEventListener('error', (event) => {
+            console.error('🚨 全局错误:', event.error);
+        });
+
+        // 监听来自 Farcaster 的消息
+        window.addEventListener('message', (event) => {
+            console.log('📨 收到消息:', event.data);
+        });
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +8,14 @@
     <!-- Farcaster MiniApp Meta Tags -->
     <meta property="fc:frame" content="vNext" />
     <meta property="fc:frame:image" content="https://rohankishibecn.github.io/gm-checkin-miniapp/og-image.png" />
-    <meta property="fc:frame:button:1" content="Start Check-in" />
+    <meta property="fc:frame:button:1" content="开始签到" />
     <meta property="fc:frame:button:1:action" content="link" />
     <meta property="fc:frame:button:1:target" content="https://rohankishibecn.github.io/gm-checkin-miniapp" />
     
-    <!-- Key: Farcaster MiniApp Configuration -->
+    <!-- 关键：Farcaster MiniApp 配置 -->
     <meta name="fc:miniapp" content='{
         "name": "GM Check-in",
-        "description": "Daily check-in to earn USDC rewards",
+        "description": "每日签到赚取 USDC 奖励",
         "icon": "https://rohankishibecn.github.io/gm-checkin-miniapp/icon-192.png",
         "splashImage": "https://rohankishibecn.github.io/gm-checkin-miniapp/splash.png",
         "version": "1.0.0"
@@ -211,69 +211,69 @@
     <div class="container">
         <div class="header">
             <h1>🌅 GM Check-in</h1>
-            <p>Daily check-in to earn USDC rewards</p>
+            <p>每日签到，赚取 USDC 奖励</p>
         </div>
         
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value" id="totalCheckins">0</div>
-                <div class="stat-label">Total Check-ins</div>
+                <div class="stat-label">总签到次数</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="currentStreak">0</div>
-                <div class="stat-label">Current Streak</div>
+                <div class="stat-label">连续签到</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalRewards">0.00</div>
-                <div class="stat-label">Total Rewards (USDC)</div>
+                <div class="stat-label">总奖励 (USDC)</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="todayReward">0.00</div>
-                <div class="stat-label">Today's Reward (USDC)</div>
+                <div class="stat-label">今日奖励 (USDC)</div>
             </div>
         </div>
         
         <div class="checkin-section">
-            <h3>Today's Check-in</h3>
-            <p id="checkinStatus">Click the button below to complete today's check-in</p>
+            <h3>今日签到</h3>
+            <p id="checkinStatus">点击下方按钮完成今日签到</p>
             <button class="checkin-btn" id="checkinBtn" onclick="performCheckin()">
-                🌅 Check In Now
+                🌅 立即签到
             </button>
         </div>
         
         <div class="milestones">
-            <h3>🎯 Milestone Rewards</h3>
+            <h3>🎯 里程碑奖励</h3>
             <div class="milestone-item">
-                <span>7-day streak</span>
+                <span>连续签到 7 天</span>
                 <span class="milestone-reward">+0.01 USDC</span>
             </div>
             <div class="milestone-item">
-                <span>30-day streak</span>
+                <span>连续签到 30 天</span>
                 <span class="milestone-reward">+0.01 USDC</span>
             </div>
             <div class="milestone-item">
-                <span>100-day streak</span>
+                <span>连续签到 100 天</span>
                 <span class="milestone-reward">+0.01 USDC</span>
             </div>
         </div>
         
         <div class="debug-panel">
-            <h4>🔧 Debug Info</h4>
+            <h4>🔧 调试信息</h4>
             <div class="debug-item">
-                <span>Environment:</span>
-                <span class="debug-value" id="environment">Detecting...</span>
+                <span>环境:</span>
+                <span class="debug-value" id="environment">检测中...</span>
             </div>
             <div class="debug-item">
-                <span>SDK Status:</span>
-                <span class="debug-value" id="sdkStatus">Detecting...</span>
+                <span>SDK 状态:</span>
+                <span class="debug-value" id="sdkStatus">检测中...</span>
             </div>
             <div class="debug-item">
-                <span>Ready Called:</span>
-                <span class="debug-value" id="readyStatus">Waiting...</span>
+                <span>Ready 调用:</span>
+                <span class="debug-value" id="readyStatus">等待中...</span>
             </div>
             <div class="debug-item">
-                <span>Initialization:</span>
-                <span class="debug-value" id="initStatus">In Progress...</span>
+                <span>初始化:</span>
+                <span class="debug-value" id="initStatus">进行中...</span>
             </div>
         </div>
     </div>
@@ -281,7 +281,7 @@
     <div class="notification" id="notification"></div>
     
     <script>
-        // Application state
+        // 应用状态
         const appState = {
             user: null,
             isAuthenticated: false,
@@ -292,7 +292,7 @@
             sdkReady: false
         };
         
-        // Show notification
+        // 显示通知
         function showNotification(message) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -302,158 +302,158 @@
             }, 3000);
         }
         
-        // Update debug information
+        // 更新调试信息
         function updateDebugInfo() {
-            // Detect environment
+            // 检测环境
             const isInIframe = window.parent !== window;
-            const environment = isInIframe ? 'Farcaster MiniApp' : 'Regular Browser';
+            const environment = isInIframe ? 'Farcaster MiniApp' : '普通浏览器';
             document.getElementById('environment').textContent = environment;
             
-            // Detect SDK
+            // 检测 SDK
             const hasSdk = typeof window.sdk !== 'undefined' && 
                           window.sdk && 
                           window.sdk.actions && 
                           typeof window.sdk.actions.ready === 'function';
-            document.getElementById('sdkStatus').textContent = hasSdk ? 'Loaded' : 'Not Loaded';
-            document.getElementById('readyStatus').textContent = appState.sdkReady ? 'Called' : 'Not Called';
-            document.getElementById('initStatus').textContent = appState.isInitialized ? 'Complete' : 'In Progress';
+            document.getElementById('sdkStatus').textContent = hasSdk ? '已加载' : '未加载';
+            document.getElementById('readyStatus').textContent = appState.sdkReady ? '已调用' : '未调用';
+            document.getElementById('initStatus').textContent = appState.isInitialized ? '完成' : '进行中';
         }
         
-        // Key fix: Correct Farcaster SDK initialization
+        // 关键修复：正确的 Farcaster SDK 初始化
         function initializeFarcasterSDK() {
-            console.log('🚀 Starting Farcaster SDK initialization...');
+            console.log('🚀 开始 Farcaster SDK 初始化...');
             
-            // Detect environment
+            // 检测环境
             const isInIframe = window.parent !== window;
             if (!isInIframe) {
-                console.log('🌐 Not in Farcaster environment, skipping SDK initialization');
+                console.log('🌐 非 Farcaster 环境，跳过 SDK 初始化');
                 appState.sdkReady = true;
                 return Promise.resolve(true);
             }
             
-            console.log('📱 Farcaster environment detected');
+            console.log('📱 检测到 Farcaster 环境');
             
             return new Promise((resolve) => {
-                // Call ready() immediately - according to official docs, should call ASAP
+                // 立即调用 ready() - 根据官方文档，应该尽快调用
                 try {
-                    // Method 1: Direct call (if SDK already exists)
+                    // 方法1：直接调用（如果 SDK 已经存在）
                     if (window.sdk && window.sdk.actions && window.sdk.actions.ready) {
-                        console.log('✅ Method 1: SDK exists, calling ready() directly');
+                        console.log('✅ 方法1：SDK 已存在，直接调用 ready()');
                         window.sdk.actions.ready();
                         appState.sdkReady = true;
                         resolve(true);
                         return;
                     }
                     
-                    // Method 2: Wait for SDK to load
-                    console.log('⏳ Method 2: Waiting for SDK to load...');
+                    // 方法2：等待 SDK 加载
+                    console.log('⏳ 方法2：等待 SDK 加载...');
                     let attempts = 0;
-                    const maxAttempts = 50; // 5 second timeout
+                    const maxAttempts = 50; // 5秒超时
                     
                     const checkInterval = setInterval(() => {
                         attempts++;
                         
                         if (window.sdk && window.sdk.actions && window.sdk.actions.ready) {
-                            console.log('✅ SDK loaded, calling ready()');
+                            console.log('✅ SDK 加载完成，调用 ready()');
                             clearInterval(checkInterval);
                             window.sdk.actions.ready();
                             appState.sdkReady = true;
                             resolve(true);
                         } else if (attempts >= maxAttempts) {
-                            console.warn('⏰ SDK loading timeout, trying alternative method');
+                            console.warn('⏰ SDK 加载超时，尝试其他方法');
                             clearInterval(checkInterval);
                             
-                            // Method 3: Force call (even if SDK doesn't exist)
+                            // 方法3：强制调用（即使 SDK 不存在）
                             try {
-                                console.log('🔧 Method 3: Force calling ready()');
+                                console.log('🔧 方法3：强制调用 ready()');
                                 if (window.parent && window.parent.postMessage) {
-                                    // Notify parent window via postMessage
+                                    // 通过 postMessage 通知父窗口
                                     window.parent.postMessage({ type: 'miniapp-ready' }, '*');
-                                    console.log('📤 Sent miniapp-ready message');
+                                    console.log('📤 已发送 miniapp-ready 消息');
                                 }
                                 appState.sdkReady = true;
                                 resolve(true);
                             } catch (error) {
-                                console.error('❌ All methods failed:', error);
+                                console.error('❌ 所有方法都失败了:', error);
                                 resolve(false);
                             }
                         }
                     }, 100);
                     
                 } catch (error) {
-                    console.error('❌ SDK initialization failed:', error);
+                    console.error('❌ SDK 初始化失败:', error);
                     resolve(false);
                 }
             });
         }
         
-        // Perform check-in
+        // 执行签到
         async function performCheckin() {
             const btn = document.getElementById('checkinBtn');
             const status = document.getElementById('checkinStatus');
             
             btn.disabled = true;
-            btn.textContent = 'Checking in...';
+            btn.textContent = '签到中...';
             
             try {
-                // Check if already checked in today
+                // 检查今日是否已签到
                 const today = new Date().toDateString();
                 const existingCheckin = appState.checkins.find(c => 
                     new Date(c.date).toDateString() === today
                 );
                 
                 if (existingCheckin) {
-                    showNotification('Already checked in today!');
+                    showNotification('今日已完成签到！');
                     return;
                 }
                 
-                // Perform check-in
+                // 执行签到
                 const checkin = {
                     date: new Date().toISOString(),
                     reward: 0.01,
                     milestone: false
                 };
                 
-                // Calculate streak
+                // 计算连续签到
                 appState.currentStreak = calculateStreak();
                 
-                // Check milestone
+                // 检查里程碑
                 const milestoneReward = checkMilestone(appState.currentStreak + 1);
                 if (milestoneReward > 0) {
                     checkin.reward += milestoneReward;
                     checkin.milestone = true;
                 }
                 
-                // Save check-in record
+                // 保存签到记录
                 appState.checkins.push(checkin);
                 appState.totalRewards += checkin.reward;
                 appState.currentStreak += 1;
                 
-                // Save to local storage
+                // 保存到本地存储
                 localStorage.setItem('gm_checkins', JSON.stringify(appState.checkins));
                 localStorage.setItem('gm_total_rewards', appState.totalRewards.toString());
                 
-                // Update UI
+                // 更新UI
                 updateUI();
                 
-                // Show success message
+                // 显示成功消息
                 const message = checkin.milestone ? 
-                    `🎉 Check-in successful! Earned ${checkin.reward} USDC (including milestone bonus)` :
-                    `✅ Check-in successful! Earned ${checkin.reward} USDC`;
+                    `🎉 签到成功！获得 ${checkin.reward} USDC（含里程碑奖励）` :
+                    `✅ 签到成功！获得 ${checkin.reward} USDC`;
                 showNotification(message);
                 
-                status.textContent = 'Today\'s check-in completed!';
-                btn.textContent = '✅ Checked In';
+                status.textContent = '今日签到已完成！';
+                btn.textContent = '✅ 已签到';
                 
             } catch (error) {
-                console.error('Check-in failed:', error);
-                showNotification('Check-in failed, please try again');
+                console.error('签到失败:', error);
+                showNotification('签到失败，请重试');
                 btn.disabled = false;
-                btn.textContent = '🌅 Check In Now';
+                btn.textContent = '🌅 立即签到';
             }
         }
         
-        // Calculate consecutive check-in days
+        // 计算连续签到天数
         function calculateStreak() {
             if (appState.checkins.length === 0) return 0;
             
@@ -482,19 +482,19 @@
             return streak;
         }
         
-        // Check milestone rewards
+        // 检查里程碑奖励
         function checkMilestone(streak) {
             const milestones = [7, 30, 100];
             return milestones.includes(streak) ? 0.01 : 0;
         }
         
-        // Update UI
+        // 更新UI
         function updateUI() {
             document.getElementById('totalCheckins').textContent = appState.checkins.length;
             document.getElementById('currentStreak').textContent = appState.currentStreak;
             document.getElementById('totalRewards').textContent = appState.totalRewards.toFixed(2);
             
-            // Calculate today's reward
+            // 计算今日奖励
             const today = new Date().toDateString();
             const todayCheckin = appState.checkins.find(c => 
                 new Date(c.date).toDateString() === today
@@ -502,22 +502,22 @@
             document.getElementById('todayReward').textContent = 
                 todayCheckin ? todayCheckin.reward.toFixed(2) : '0.00';
             
-            // Update check-in button status
+            // 更新签到按钮状态
             const btn = document.getElementById('checkinBtn');
             const status = document.getElementById('checkinStatus');
             
             if (todayCheckin) {
                 btn.disabled = true;
-                btn.textContent = '✅ Checked In';
-                status.textContent = 'Today\'s check-in completed!';
+                btn.textContent = '✅ 已签到';
+                status.textContent = '今日签到已完成！';
             } else {
                 btn.disabled = false;
-                btn.textContent = '🌅 Check In Now';
-                status.textContent = 'Click the button below to complete today\'s check-in';
+                btn.textContent = '🌅 立即签到';
+                status.textContent = '点击下方按钮完成今日签到';
             }
         }
         
-        // Load user data
+        // 加载用户数据
         function loadUserData() {
             try {
                 const savedCheckins = localStorage.getItem('gm_checkins');
@@ -534,51 +534,51 @@
                 appState.currentStreak = calculateStreak();
                 
             } catch (error) {
-                console.error('Failed to load user data:', error);
+                console.error('加载用户数据失败:', error);
             }
         }
         
-        // Initialize application
+        // 初始化应用
         async function initApp() {
-            console.log('🚀 Starting GM Check-in application initialization...');
+            console.log('🚀 开始初始化 GM Check-in 应用...');
             updateDebugInfo();
             
             try {
-                // Load user data
+                // 加载用户数据
                 loadUserData();
                 
-                // Initialize Farcaster SDK
+                // 初始化 Farcaster SDK
                 await initializeFarcasterSDK();
                 
-                // Update UI
+                // 更新UI
                 updateUI();
                 
-                // Mark initialization complete
+                // 标记初始化完成
                 appState.isInitialized = true;
                 updateDebugInfo();
                 
-                console.log('✅ Application initialization complete');
-                showNotification('🎉 Welcome to GM Check-in!');
+                console.log('✅ 应用初始化完成');
+                showNotification('🎉 欢迎使用 GM Check-in！');
                 
             } catch (error) {
-                console.error('❌ Initialization failed:', error);
-                showNotification('Initialization failed, please refresh the page');
+                console.error('❌ 初始化失败:', error);
+                showNotification('初始化失败，请刷新页面重试');
             }
         }
         
-        // Initialize after page load
+        // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', initApp);
         
-        // Listen for messages from parent window
+        // 监听来自父窗口的消息
         window.addEventListener('message', (event) => {
-            console.log('📨 Received message:', event.data);
+            console.log('📨 收到消息:', event.data);
             if (event.data.type === 'farcaster-sdk-ready') {
-                console.log('🎯 Received Farcaster SDK ready notification');
+                console.log('🎯 收到 Farcaster SDK 就绪通知');
                 initializeFarcasterSDK();
             }
         });
         
-        // Periodically update debug info
+        // 定期更新调试信息
         setInterval(updateDebugInfo, 1000);
     </script>
 </body>
