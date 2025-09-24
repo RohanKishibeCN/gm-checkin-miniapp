@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM Check-in</title>
+    
+    <!-- Farcaster MiniApp Meta Tags -->
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHZpZXdCb3g9IjAgMCAxMjAwIDYzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMF8xKSIvPgo8dGV4dCB4PSI2MDAiIHk9IjI4MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkdNIENoZWNrLWluPC90ZXh0Pgo8dGV4dCB4PSI2MDAiIHk9IjM0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RGFpbHkgY2hlY2staW4gdG8gZWFybiBVU0RDIHJld2FyZHM8L3RleHQ+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMF8xIiB4MT0iMCIgeTE9IjAiIHgyPSIxMjAwIiB5Mj0iNjMwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM2NjdlZWEiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzY0YmEyIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+" />
+    <meta property="fc:frame:button:1" content="Start Check-in" />
+    <meta property="fc:frame:button:1:action" content="link" />
+    <meta property="fc:frame:button:1:target" content="https://rohankishibecn.github.io/gm-checkin-miniapp" />
+    
+    <!-- Simplified MiniApp Configuration without external images -->
+    <meta name="fc:miniapp" content='{
+        "name": "GM Check-in",
+        "description": "Daily check-in to earn USDC rewards",
+        "version": "1.0.0"
+    }' />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .checkin-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .checkin-btn {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 250px;
+        }
+        
+        .checkin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .checkin-btn:disabled {
+            background: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .reward-info {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .milestones {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .milestone-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .milestone-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+        
+        .milestone-days {
+            font-weight: bold;
+        }
+        
+        .milestone-reward {
+            color: #feca57;
+            font-weight: bold;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        .notification.success {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+        }
+        
+        .notification.error {
+            background: linear-gradient(45deg, #e17055, #fd79a8);
+        }
+        
+        .debug-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .debug-title {
+            color: #feca57;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .debug-item {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .debug-label {
+            color: #74b9ff;
+        }
+        
+        .debug-value {
+            color: #00b894;
+        }
+        
+        .debug-value.error {
+            color: #e17055;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .checkin-section {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🌅</div>
+            <div class="title">GM Check-in</div>
+            <div class="subtitle">Daily check-in to earn USDC rewards</div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="currentStreak">0</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalCheckins">0</div>
+                <div class="stat-label">Total Check-ins</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalRewards">0.00</div>
+                <div class="stat-label">Total USDC</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="nextMilestone">7</div>
+                <div class="stat-label">Next Milestone</div>
+            </div>
+        </div>
+        
+        <div class="checkin-section">
+            <button class="checkin-btn" id="checkinBtn" onclick="performCheckin()">
+                Check In Now
+            </button>
+            <div class="reward-info">
+                Earn 0.01 USDC per check-in + milestone bonuses
+            </div>
+        </div>
+        
+        <div class="milestones">
+            <div class="milestone-title">🎯 Milestone Rewards</div>
+            <div class="milestone-item">
+                <span class="milestone-days">7 days streak</span>
+                <span class="milestone-reward">+0.01 USDC</span>
+            </div>
+            <div class="milestone-item">
+                <span class="milestone-days">30 days streak</span>
+                <span class="milestone-reward">+0.01 USDC</span>
+            </div>
+            <div class="milestone-item">
+                <span class="milestone-days">100 days streak</span>
+                <span class="milestone-reward">+0.01 USDC</span>
+            </div>
+        </div>
+        
+        <div class="debug-panel">
+            <div class="debug-title">🔧 Debug Information</div>
+            <div class="debug-item">
+                <span class="debug-label">Environment:</span>
+                <span class="debug-value" id="debugEnvironment">Loading...</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">SDK Status:</span>
+                <span class="debug-value" id="debugSDK">Loading...</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">Ready Called:</span>
+                <span class="debug-value" id="debugReady">Loading...</span>
+            </div>
+            <div class="debug-item">
+                <span class="debug-label">Initialization:</span>
+                <span class="debug-value" id="debugInit">Loading...</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <script>
+        // Global state
+        let checkins = [];
+        let hasCheckedInToday = false;
+        let debugInfo = {
+            environment: 'Loading...',
+            sdkStatus: 'Loading...',
+            readyCalled: false,
+            initialized: false
+        };
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 GM Check-in App Starting...');
+            initializeApp();
+        });
+        
+        function initializeApp() {
+            try {
+                // Load saved data
+                loadCheckinData();
+                
+                // Update UI
+                updateStats();
+                updateCheckinButton();
+                
+                // Initialize Farcaster SDK
+                initializeFarcasterSDK();
+                
+                // Update debug info
+                updateDebugInfo();
+                
+                debugInfo.initialized = true;
+                console.log('✅ App initialized successfully');
+                
+            } catch (error) {
+                console.error('❌ App initialization failed:', error);
+                showNotification('Initialization failed: ' + error.message, 'error');
+            }
+        }
+        
+        function initializeFarcasterSDK() {
+            console.log('🔧 Initializing Farcaster SDK...');
+            
+            // Detect environment
+            const isInIframe = window.parent !== window;
+            const isInFarcaster = isInIframe && (
+                window.location !== window.parent.location ||
+                document.referrer.includes('farcaster') ||
+                navigator.userAgent.includes('Farcaster')
+            );
+            
+            debugInfo.environment = isInFarcaster ? 'Farcaster MiniApp' : 
+                                   isInIframe ? 'Iframe' : 'Regular Browser';
+            
+            console.log('Environment detected:', debugInfo.environment);
+            
+            // Triple insurance mechanism for SDK ready() call
+            if (isInIframe) {
+                // Method 1: Direct call if SDK exists
+                if (window.sdk && window.sdk.actions && window.sdk.actions.ready) {
+                    console.log('📞 Method 1: Calling SDK ready() directly');
+                    try {
+                        window.sdk.actions.ready();
+                        debugInfo.readyCalled = true;
+                        debugInfo.sdkStatus = 'Ready Called';
+                        console.log('✅ SDK ready() called successfully (Method 1)');
+                    } catch (error) {
+                        console.error('❌ SDK ready() call failed (Method 1):', error);
+                    }
+                }
+                
+                // Method 2: Wait for SDK to load
+                let attempts = 0;
+                const maxAttempts = 30; // 3 seconds
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    if (window.sdk && window.sdk.actions && window.sdk.actions.ready) {
+                        console.log('📞 Method 2: Calling SDK ready() after detection');
+                        try {
+                            window.sdk.actions.ready();
+                            debugInfo.readyCalled = true;
+                            debugInfo.sdkStatus = 'Ready Called (Delayed)';
+                            console.log('✅ SDK ready() called successfully (Method 2)');
+                        } catch (error) {
+                            console.error('❌ SDK ready() call failed (Method 2):', error);
+                        }
+                        clearInterval(checkInterval);
+                    } else if (attempts >= maxAttempts) {
+                        console.log('⏰ SDK detection timeout after 3 seconds');
+                        debugInfo.sdkStatus = 'Not Loaded';
+                        clearInterval(checkInterval);
+                    }
+                }, 100);
+                
+                // Method 3: PostMessage notification (most reliable)
+                console.log('📞 Method 3: Sending postMessage notification');
+                try {
+                    window.parent.postMessage({ 
+                        type: 'miniapp-ready',
+                        source: 'gm-checkin-app',
+                        timestamp: Date.now()
+                    }, '*');
+                    debugInfo.readyCalled = true;
+                    console.log('✅ PostMessage sent successfully (Method 3)');
+                } catch (error) {
+                    console.error('❌ PostMessage failed (Method 3):', error);
+                }
+                
+            } else {
+                debugInfo.sdkStatus = 'Not Required';
+                debugInfo.readyCalled = true;
+                console.log('ℹ️ Not in iframe, SDK not required');
+            }
+            
+            // Listen for messages from parent
+            window.addEventListener('message', function(event) {
+                console.log('📨 Received message:', event.data);
+                if (event.data && event.data.type === 'farcaster-ready') {
+                    debugInfo.sdkStatus = 'Parent Confirmed';
+                    console.log('✅ Farcaster parent confirmed ready');
+                }
+            });
+            
+            updateDebugInfo();
+        }
+        
+        function loadCheckinData() {
+            try {
+                const saved = localStorage.getItem('gm_checkins');
+                if (saved) {
+                    checkins = JSON.parse(saved);
+                    console.log('📊 Loaded', checkins.length, 'previous check-ins');
+                }
+                
+                // Check if already checked in today
+                const today = new Date().toDateString();
+                hasCheckedInToday = checkins.some(checkin => 
+                    new Date(checkin.date).toDateString() === today
+                );
+                
+            } catch (error) {
+                console.error('❌ Failed to load checkin data:', error);
+                checkins = [];
+                hasCheckedInToday = false;
+            }
+        }
+        
+        function saveCheckinData() {
+            try {
+                localStorage.setItem('gm_checkins', JSON.stringify(checkins));
+                console.log('💾 Checkin data saved');
+            } catch (error) {
+                console.error('❌ Failed to save checkin data:', error);
+            }
+        }
+        
+        function updateStats() {
+            const currentStreak = calculateCurrentStreak();
+            const totalCheckins = checkins.length;
+            const totalRewards = checkins.reduce((sum, checkin) => sum + checkin.reward, 0);
+            const nextMilestone = getNextMilestone(currentStreak);
+            
+            document.getElementById('currentStreak').textContent = currentStreak;
+            document.getElementById('totalCheckins').textContent = totalCheckins;
+            document.getElementById('totalRewards').textContent = totalRewards.toFixed(2);
+            document.getElementById('nextMilestone').textContent = nextMilestone;
+        }
+        
+        function calculateCurrentStreak() {
+            if (checkins.length === 0) return 0;
+            
+            const sortedCheckins = [...checkins].sort((a, b) => new Date(b.date) - new Date(a.date));
+            let streak = 0;
+            let currentDate = new Date();
+            
+            for (let i = 0; i < sortedCheckins.length; i++) {
+                const checkinDate = new Date(sortedCheckins[i].date);
+                const daysDiff = Math.floor((currentDate - checkinDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff === streak) {
+                    streak++;
+                    currentDate = checkinDate;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+        
+        function getNextMilestone(currentStreak) {
+            const milestones = [7, 30, 100];
+            for (let milestone of milestones) {
+                if (currentStreak < milestone) {
+                    return milestone;
+                }
+            }
+            return currentStreak + 1;
+        }
+        
+        function updateCheckinButton() {
+            const btn = document.getElementById('checkinBtn');
+            
+            if (hasCheckedInToday) {
+                btn.textContent = '✅ Checked In Today';
+                btn.disabled = true;
+            } else {
+                btn.textContent = 'Check In Now';
+                btn.disabled = false;
+            }
+        }
+        
+        function performCheckin() {
+            if (hasCheckedInToday) {
+                showNotification('Already checked in today!', 'error');
+                return;
+            }
+            
+            try {
+                const now = new Date();
+                let reward = 0.01; // Base reward
+                
+                // Calculate streak before adding new checkin
+                const currentStreak = calculateCurrentStreak();
+                const newStreak = currentStreak + 1;
+                
+                // Check for milestone bonus
+                const milestones = [7, 30, 100];
+                if (milestones.includes(newStreak)) {
+                    reward += 0.01; // Milestone bonus
+                    console.log('🎯 Milestone reached:', newStreak, 'days');
+                }
+                
+                // Add new checkin
+                const newCheckin = {
+                    date: now.toISOString(),
+                    reward: reward,
+                    streak: newStreak
+                };
+                
+                checkins.push(newCheckin);
+                hasCheckedInToday = true;
+                
+                // Save data
+                saveCheckinData();
+                
+                // Update UI
+                updateStats();
+                updateCheckinButton();
+                
+                // Show success notification
+                let message = `Check-in successful! +${reward.toFixed(2)} USDC`;
+                if (reward > 0.01) {
+                    message += ` (Milestone bonus included!)`;
+                }
+                showNotification(message, 'success');
+                
+                console.log('✅ Check-in completed:', newCheckin);
+                
+            } catch (error) {
+                console.error('❌ Check-in failed:', error);
+                showNotification('Check-in failed: ' + error.message, 'error');
+            }
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function updateDebugInfo() {
+            document.getElementById('debugEnvironment').textContent = debugInfo.environment;
+            document.getElementById('debugSDK').textContent = debugInfo.sdkStatus;
+            document.getElementById('debugReady').textContent = debugInfo.readyCalled ? 'Called' : 'Not Called';
+            document.getElementById('debugInit').textContent = debugInfo.initialized ? 'Complete' : 'In Progress';
+            
+            // Update colors based on status
+            const readyElement = document.getElementById('debugReady');
+            readyElement.className = debugInfo.readyCalled ? 'debug-value' : 'debug-value error';
+            
+            const initElement = document.getElementById('debugInit');
+            initElement.className = debugInfo.initialized ? 'debug-value' : 'debug-value error';
+        }
+        
+        // Update debug info periodically
+        setInterval(updateDebugInfo, 2000);
+        
+        // Handle visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                console.log('👁️ App became visible, refreshing data...');
+                loadCheckinData();
+                updateStats();
+                updateCheckinButton();
+            }
+        });
+        
+        console.log('🎉 GM Check-in App loaded successfully');
+    </script>
+</body>
+</html>
