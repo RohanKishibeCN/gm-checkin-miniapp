@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM Check-in MiniApp</title>
+    <meta name="description" content="Daily check-in app to build good habits and earn USDC rewards on Base">
+    
+    <!-- Farcaster Mini App Embed Metadata -->
+    <meta name="fc:miniapp" content='{"version":"1","name":"GM Check-in","icon":"https://gm-checkin.vercel.app/icon-192.png","splashImageUrl":"https://gm-checkin.vercel.app/splash.png","splashBackgroundColor":"#8A63D2","homeUrl":"https://gm-checkin.vercel.app/"}' />
+    
+    <!-- OpenGraph for social sharing -->
+    <meta property="og:title" content="GM Check-in - Daily Habit Builder">
+    <meta property="og:description" content="Build daily habits, earn USDC rewards, and maintain streaks on Base blockchain">
+    <meta property="og:image" content="https://your-domain.com/og-image.png">
+    <meta property="og:url" content="https://your-domain.com/">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GM Check-in - Daily Habit Builder">
+    <meta name="twitter:description" content="Build daily habits, earn USDC rewards, and maintain streaks on Base blockchain">
+    <meta name="twitter:image" content="https://your-domain.com/og-image.png">
+    
+    <!-- PWA Support -->
+    <meta name="theme-color" content="#8A63D2">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Performance optimizations -->
+    <link rel="preconnect" href="https://auth.farcaster.xyz">
+    <link rel="preconnect" href="https://mainnet.base.org">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="app-farcaster.js" as="script">
+    
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Additional Farcaster-specific styles -->
+    <style>
+        /* Farcaster-specific optimizations */
+        .farcaster-user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(138, 99, 210, 0.1);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        
+        .farcaster-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+        
+        .farcaster-username {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .farcaster-fid {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        
+        .share-cast-btn {
+            background: linear-gradient(135deg, #8A63D2, #9D7ADB);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 12px;
+            width: 100%;
+        }
+        
+        .share-cast-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .loading-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+        }
+        
+        .loading-splash.hidden {
+            display: none;
+        }
+        
+        .splash-logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        .splash-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .splash-subtext {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* Mobile optimizations for Farcaster */
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+                margin: 8px;
+                border-radius: 16px;
+            }
+            
+            .farcaster-user-info {
+                margin-bottom: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Splash Screen -->
+    <div class="loading-splash" id="loadingSplash">
+        <div class="splash-logo">🌅</div>
+        <div class="splash-text">GM Check-in</div>
+        <div class="splash-subtext">Loading your daily habit tracker...</div>
+    </div>
+
+    <div class="container">
+        <!-- Farcaster User Info -->
+        <div class="farcaster-user-info" id="farcasterUserInfo" style="display: none;">
+            <div class="farcaster-avatar" id="farcasterAvatar"></div>
+            <div>
+                <div class="farcaster-username" id="farcasterUsername">Loading...</div>
+                <div class="farcaster-fid" id="farcasterFid">FID: ...</div>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1 id="greeting">Good Morning!</h1>
+            <p>Ready to say GM?</p>
+            <div class="timezone-info" id="timezoneInfo"></div>
+        </div>
+
+        <div class="streak-display">
+            <h3>Current Streak</h3>
+            <div class="value" id="streak">0 days</div>
+            <div class="streak-fire" id="streakFire">🔥</div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <h4>Total Check-ins</h4>
+                <div class="value" id="total">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>USDC Earned</h4>
+                <div class="value" id="tokens">0.00 USDC</div>
+            </div>
+            <div class="stat-card">
+                <h4>Best Streak</h4>
+                <div class="value" id="bestStreak">0</div>
+            </div>
+        </div>
+
+        <div class="checkin-section">
+            <button class="checkin-button active" id="checkinBtn">
+                <span id="btnText">GM!</span>
+                <div class="button-ripple" id="buttonRipple"></div>
+            </button>
+            
+            <div class="status" id="status">
+                Ready for today's check-in!
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="milestones">Milestones</button>
+            <button class="tab-button" data-tab="calendar">Calendar</button>
+            <button class="tab-button" data-tab="settings">Settings</button>
+            <button class="tab-button" data-tab="social">Social</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Milestones Tab -->
+            <div class="tab-panel active" id="milestones">
+                <div class="milestones">
+                    <h3>Milestone Rewards</h3>
+                    <div class="milestone pending" id="milestone3">
+                        <span>3 Day Streak</span>
+                        <span class="reward">+0.01 USDC</span>
+                    </div>
+                    <div class="milestone pending" id="milestone7">
+                        <span>7 Day Streak</span>
+                        <span class="reward">+0.01 USDC</span>
+                    </div>
+                    <div class="milestone pending" id="milestone15">
+                        <span>15 Day Streak</span>
+                        <span class="reward">+0.01 USDC</span>
+                    </div>
+                    <div class="milestone pending" id="milestone30">
+                        <span>30 Day Streak</span>
+                        <span class="reward">+0.01 USDC</span>
+                    </div>
+                    <div class="milestone pending" id="milestone100">
+                        <span>100 Day Streak</span>
+                        <span class="reward">+0.01 USDC</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Tab -->
+            <div class="tab-panel" id="calendar">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth">&lt;</button>
+                        <h3 id="currentMonth"></h3>
+                        <button id="nextMonth">&gt;</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-panel" id="settings">
+                <div class="settings-container">
+                    <div class="setting-item">
+                        <label for="notifications">Enable Notifications</label>
+                        <input type="checkbox" id="notifications">
+                    </div>
+                    <div class="setting-item">
+                        <label for="reminderTime">Daily Reminder</label>
+                        <input type="time" id="reminderTime" value="09:00">
+                    </div>
+                    <div class="setting-item">
+                        <label for="timezone">Timezone</label>
+                        <select id="timezone"></select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="useBlockchain">Use Base Blockchain</label>
+                        <input type="checkbox" id="useBlockchain" checked>
+                    </div>
+                    <div class="setting-actions">
+                        <button id="exportData" class="setting-btn">Export Data</button>
+                        <button id="importData" class="setting-btn">Import Data</button>
+                        <button id="resetData" class="setting-btn danger">Reset All Data</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Tab (Farcaster-specific) -->
+            <div class="tab-panel" id="social">
+                <div class="social-container">
+                    <h3>Share Your Progress</h3>
+                    <div class="achievement-preview" id="achievementPreview">
+                        <div class="achievement-text">
+                            🔥 I've maintained a <span id="shareStreak">0</span>-day GM streak and earned <span id="shareTokens">0.00 USDC</span>!
+                        </div>
+                    </div>
+                    <button class="share-cast-btn" id="shareCastBtn">Share as Cast</button>
+                    
+                    <div class="leaderboard-section" style="margin-top: 24px;">
+                        <h3>Community Leaderboard</h3>
+                        <div class="leaderboard-list" id="leaderboardList">
+                            <p class="no-data">Loading leaderboard...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Popup -->
+    <div class="overlay" id="overlay"></div>
+    <div class="reward-popup" id="rewardPopup">
+        <div class="reward-animation" id="rewardAnimation">🎉</div>
+        <h2 id="rewardTitle">Congratulations!</h2>
+        <p id="rewardText">You earned a reward!</p>
+        <button id="rewardCloseBtn">Awesome!</button>
+        <button class="share-cast-btn" id="rewardShareBtn" style="margin-top: 8px;">Share Achievement</button>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+        <button id="toastClose">&times;</button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+
+    <!-- Farcaster MiniApp SDK -->
+    <script type="module" src="https://esm.sh/@farcaster/miniapp-sdk"></script>
+    
+    <!-- Web3 Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@4.1.1/dist/web3.min.js"></script>
+    
+    <!-- Main App Script -->
+    <script type="module" src="app-farcaster-complete.js"></script>
+</body>
+</html>

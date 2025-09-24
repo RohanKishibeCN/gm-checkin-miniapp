@@ -1,0 +1,42 @@
+{
+  "name": "gm-checkin-farcaster",
+  "version": "2.0.0",
+  "description": "Daily GM check-in app for Farcaster with Base blockchain integration",
+  "main": "test-server.js",
+  "scripts": {
+    "start": "node test-server.js",
+    "dev": "node test-server.js",
+    "test": "node test-server.js",
+    "build": "echo 'No build step required for static files'",
+    "deploy": "vercel --prod",
+    "tunnel": "ngrok http 3000"
+  },
+  "keywords": [
+    "farcaster",
+    "miniapp",
+    "habit-tracker",
+    "blockchain",
+    "base",
+    "web3",
+    "daily-checkin"
+  ],
+  "author": "GM Check-in Team",
+  "license": "MIT",
+  "dependencies": {
+    "http": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "ngrok": "^5.0.0-beta.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/gm-checkin-farcaster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/gm-checkin-farcaster/issues"
+  },
+  "homepage": "https://gm-checkin.vercel.app"
+}
